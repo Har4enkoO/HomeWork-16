@@ -1,26 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import contacts from './components/contacts';
+import Contract from './components/contract';
+import Search from './components/search';
+import Checkboxes from './components/checkboxes';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import './components/style.css';
+
+class Contracts extends Component {
+  state = {
+    male: true,
+    female: true,
+    ufo: true,
+    phoneBook: contacts,
+    filter: ''
+  };
+
+  changeFilter = element => {
+    this.setState({ filter: element.target.value });
+  };
+
+  changeCheckboxMale = () => {
+    this.setState({ male: !this.state.male });
+  };
+  changeCheckboxFemale = () => {
+    this.setState({ female: !this.state.female });
+  };
+  changeCheckboxUfo = () => {
+    this.setState({ ufo: !this.state.ufo });
+  };
+
+  render() {
+    const data = this.state.phoneBook.filter(
+      item =>
+        ((item.lastName
+          .toLowerCase()
+          .includes(this.state.filter.toLowerCase()) === true ||
+        item.firstName
+          .toLowerCase()
+          .includes(this.state.filter.toLowerCase()) === true ||
+        item.phone.includes(this.state.filter) === true) && (this.state[item.gender]))
+    );
+    return (
+      <div className="phone">
+        <Search onChange={this.changeFilter} value={this.state.filter} />
+        <Checkboxes
+          onChangeMale={this.changeCheckboxMale}
+          onChangeFemale={this.changeCheckboxFemale}
+          onChangeUfo={this.changeCheckboxUfo}
+        />
+        <div className="monitor">
+          {data.map((item, index) => (
+            <Contract item={item} order={++index} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 }
 
-export default App;
+export default Contracts;
